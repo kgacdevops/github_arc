@@ -1,0 +1,13 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: gh-runner
+  namespace: arc
+spec:
+  replicas: 1
+  template:
+    spec:
+      repository: kgacandole/github_arc
+      labels:
+        - gke
+        - k8s
