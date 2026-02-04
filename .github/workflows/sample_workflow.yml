@@ -6,7 +6,7 @@ on:
 jobs:
   init:
     name: Initialize
-    runs-on: self-hosted
+    runs-on: [gke]
     steps:
     - name: Test Runner
       run: echo "Hello world!"
