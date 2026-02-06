@@ -2,6 +2,14 @@ name: Build GCP Infrastructure
 run-name: Build GCP Infrastructure
 on:
   workflow_dispatch:
+    inputs:
+      ACTION:
+        description: "Action"
+        type: choice
+        options:
+        - plan
+        - apply
+        - destroy
 
 permissions:
   id-token: write
@@ -38,4 +46,9 @@ jobs:
         cd terraform
         terraform init
         terraform plan
+        if [[ "${{ inputs.ACTION }}" == "apply" ]]; then
+          terraform apply
+        elif [[ "${{ inputs.ACTION }}" == "destroy" ]]; then
+          terraform destroy
+        fi     
         
