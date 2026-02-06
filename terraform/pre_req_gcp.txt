@@ -1,0 +1,16 @@
+# Setup Workload Identity Federation - for Github Actions and GCP Auth #
+
+1. IAM & Admin > Workload Identity Federation
+2. Create Pool
+    name: github-pool
+    ID: github-pool
+    Location: global
+3. Add Provider - OIDC
+    Name: github-provider
+    Issuer URI: https://token.actions.githubusercontent.com
+    Allowed Audiences: Default
+    Attribute Mapping:
+        google.subject: assertion.sub
+        attribute.repository: assertion.repository
+    Attribute Conditions:
+        attribute.repository.startsWith("kgacandole/")
