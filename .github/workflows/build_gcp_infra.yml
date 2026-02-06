@@ -3,6 +3,10 @@ run-name: Build GCP Infrastructure
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+  
 jobs:
   build_infra:
     name: Build Infrastructure
