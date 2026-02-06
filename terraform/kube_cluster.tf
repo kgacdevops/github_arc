@@ -1,12 +1,12 @@
 data "google_service_accounts" "gcp_sa" {
-  account_id = "gh-gcp-runner-sa"
-  project    = var.project_id
+  prefix   = "gh-gcp-runner-sa"
+  project  = var.project_id
 }
 
 resource "google_project_iam_member" "gcp_sa_role" {
   project = var.project_id
   role    = "roles/editor"
-  member  = "serviceAccount:${data.google_service_account.gcp_sa.accounts.email}"
+  member  = "serviceAccount:${data.google_service_account.gcp_sa.email}"
 }
 
 resource "google_container_cluster" "primary" {
@@ -29,7 +29,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
   node_config {
     preemptible  = true
     machine_type = var.kube_cluster_machine_type
-    service_account = data.google_service_account.gcp_sa.accounts.email
+    service_account = data.google_service_account.gcp_sa.email
     oauth_scopes    = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
