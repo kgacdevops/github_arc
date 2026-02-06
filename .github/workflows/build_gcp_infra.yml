@@ -1,5 +1,5 @@
 name: Build GCP Infrastructure
-run-name: Build GCP Infrastructure
+run-name: Build GCP Infrastructure - ${{ github.event.inputs.ACTION }}
 on:
   workflow_dispatch:
     inputs:
