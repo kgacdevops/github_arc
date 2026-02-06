@@ -1,6 +1,7 @@
-resource "google_service_account" "gcp_sa" {
-  account_id    = var.google_svc_account_id
-  display_name  = var.google_svc_account_name
+data "google_service_accounts" "gcp_sa" {
+  accounts {
+    account_id = "gh-gcp-runner-sa"
+  }
 }
 
 resource "google_project_iam_member" "gcp_sa_role" {
