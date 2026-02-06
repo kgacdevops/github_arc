@@ -47,8 +47,8 @@ jobs:
         terraform init
         terraform plan
         if [[ "${{ inputs.ACTION }}" == "apply" ]]; then
-          terraform apply
+          terraform apply -auto-approve
         elif [[ "${{ inputs.ACTION }}" == "destroy" ]]; then
-          terraform destroy
-        fi     
+          terraform destroy -auto-approve
+        fi      
         
