@@ -1,5 +1,6 @@
 data "google_service_accounts" "gcp_sa" {
-  prefix = "gh-gcp-runner-sa"
+  account_id = "gh-gcp-runner-sa"
+  project    = var.project_id
 }
 
 resource "google_project_iam_member" "gcp_sa_role" {
