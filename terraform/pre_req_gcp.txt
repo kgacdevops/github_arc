@@ -14,3 +14,8 @@
         attribute.repository: assertion.repository
     Attribute Conditions:
         attribute.repository.startsWith("kgacandole/")
+4. Create a service account with below permissions:
+
+5. Bind the service account to the identiy pool using below command:
+    
+    gcloud iam service-accounts add-iam-policy-binding terraform-gcp-sa@project-235e2136-7c2e-4409-bad.iam.gserviceaccount.com --role="roles/iam.workloadIdentityUser" --member="principalSet://iam.googleapis.com/projects/390209572226/locations/global/workloadIdentityPools/github-pool/attribute.startsWith('kgacandole/')"
