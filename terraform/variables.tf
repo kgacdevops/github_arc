@@ -1,6 +1,7 @@
 variable "project_id" {}
 variable "region_name" {}
 variable "zone_name" {}
+variable "svc_account_mail" {}
 variable "google_svc_account_id" {}
 variable "google_svc_account_name" {}
 variable "kube_cluster_name" {}
