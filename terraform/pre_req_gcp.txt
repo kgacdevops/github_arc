@@ -1,7 +1,8 @@
-# Running TF Locally #
-
+## Running TF Locally ##
 1. Install gcloud cli
 2. Run command, gcloud auth application-default login, to create credentials in ~/.config/gcloud/application_default_credentials.json (This will be picked up by Terraform)
+
+## Running using GH Actions ##
 
 # Setup Workload Identity Federation - for Github Actions and GCP Auth #
 
@@ -22,6 +23,15 @@
 4. Create a service account with below permissions:
 
 5. Bind the service account to the identiy pool using below command:
-    
-    gcloud iam service-accounts add-iam-policy-binding terraform-gcp-sa@project-235e2136-7c2e-4409-bad.iam.gserviceaccount.com --role="roles/iam.workloadIdentityUser" --member="principalSet://iam.googleapis.com/projects/390209572226/locations/global/workloadIdentityPools/github-pool/attribute.startsWith('kgacandole/')"
 
+# Allow GitHub OIDC identities to act as terraform-gcp-sa
+gcloud iam service-accounts add-iam-policy-binding terraform-gcp-sa@project-235e2136-7c2e-4409-bad.iam.gserviceaccount.com \
+  --role="roles/iam.workloadIdentityUser" \
+  --member="principalSet://iam.googleapis.com/projects/390209572226/locations/global/workloadIdentityPools/github-pool/attribute.repository/kgacandole/github_arc"
+
+# Allow Terraform to request access tokens (needed by provider)
+gcloud iam service-accounts add-iam-policy-binding terraform-gcp-sa@project-235e2136-7c2e-4409-bad.iam.gserviceaccount.com \
+  --role="roles/iam.serviceAccountTokenCreator" \
+  --member="principalSet://iam.googleapis.com/projects/390209572226/locations/global/workloadIdentityPools/github-pool/attribute.repository/kgacandole/github_arc"
+
+6. In the GCP bucket holding the state file, ensure that 'terraform-gcp-sa' SA has access to the bucket (Edit the IAM Policy condition).
