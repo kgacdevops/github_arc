@@ -8,7 +8,7 @@ resource "google_container_cluster" "primary" {
 
 resource "google_container_node_pool" "primary_preemptible_nodes" {
   name       = var.kube_cluster_node_pool_name
-  location   = var.region_name
+  location   = google_container_cluster.primary.location
   cluster    = google_container_cluster.primary.name
   node_count = var.kube_cluster_node_count
 
