@@ -1,4 +1,5 @@
 ## Running TF Locally ##
+
 1. Install gcloud cli
 2. Run command, gcloud auth application-default login, to create credentials in ~/.config/gcloud/application_default_credentials.json (This will be picked up by Terraform)
 
@@ -35,3 +36,26 @@ gcloud iam service-accounts add-iam-policy-binding terraform-gcp-sa@project-235e
   --member="principalSet://iam.googleapis.com/projects/390209572226/locations/global/workloadIdentityPools/github-pool/attribute.repository/kgacandole/github_arc"
 
 6. In the GCP bucket holding the state file, ensure that 'terraform-gcp-sa' SA has access to the bucket (Edit the IAM Policy condition).
+
+7. Add binding on develoepr/terraform service account (otherwise, Kube Cluster creation will fail)
+
+gcloud iam service-accounts add-iam-policy-binding 390209572226-compute@developer.gserviceaccount.com \
+  --member="serviceAccount:terraform-gcp-sa@project-235e2136-7c2e-4409-bad.iam.gserviceaccount.com" \
+  --role="roles/iam.serviceAccountUser"
+
+# Project-level binding #
+
+gcloud projects add-iam-policy-binding "project-235e2136-7c2e-4409-bad" \
+  --member="serviceAccount:terraform-gcp-sa@project-235e2136-7c2e-4409-bad.iam.gserviceaccount.com" \
+  --role="roles/container.admin" \
+  --condition="expression=true,title=always_allow,description=No restrictions"
+
+8. Add below binding for node pool creation
+
+gcloud iam service-accounts add-iam-policy-binding terraform-gcp-sa@project-235e2136-7c2e-4409-bad.iam.gserviceaccount.com \
+  --member="serviceAccount:terraform-gcp-sa@project-235e2136-7c2e-4409-bad.iam.gserviceaccount.com" \
+  --role="roles/iam.serviceAccountUser"
+
+gcloud projects add-iam-policy-binding "project-235e2136-7c2e-4409-bad" \
+  --member="serviceAccount:terraform-gcp-sa@project-235e2136-7c2e-4409-bad.iam.gserviceaccount.com" \
+  --role="roles/compute.viewer"
