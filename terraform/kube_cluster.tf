@@ -1,3 +1,12 @@
+resource "google_compute_network" "vpc_network" {
+  name                          = var.vpc_name
+  project                       = var.project_id
+  auto_create_subnetworks       = true
+  mtu                           = var.mtu_val
+  routing_mode                  = "GLOBAL"
+  bgp_best_path_selection_mode  = "STANDARD"
+}
+
 resource "google_container_cluster" "primary" {
   name                      = var.kube_cluster_name
   location                  = var.zone_name
