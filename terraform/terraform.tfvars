@@ -3,6 +3,9 @@ region_name                     = "us-central1"
 zone_name                       = "us-central1-a"
 svc_account_mail                = "terraform-gcp-sa@project-235e2136-7c2e-4409-bad.iam.gserviceaccount.com"
 
+mtu_val                         = 1460
+vpc_name                        = "infra-vpc"
+
 google_svc_account_id           = "kg-svc-account"
 google_svc_account_name         = "kg-svc-account-name"
 
