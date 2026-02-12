@@ -8,7 +8,5 @@ variable "svc_ip_range" {}
 variable "svc_account_mail" {}
 variable "google_svc_account_id" {}
 variable "google_svc_account_name" {}
-variable "kube_cluster_name" {}
 variable "kube_cluster_node_count" {}
-variable "kube_cluster_node_pool_name" {}
 variable "kube_cluster_machine_type" {}
