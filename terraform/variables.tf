@@ -1,8 +1,10 @@
 variable "project_id" {}
 variable "region_name" {}
 variable "zone_name" {}
-variable "mtu_val" {}
-variable "vpc_name" {}
+variable "prefix" {}
+variable "cidr_range" {}
+variable "pods_ip_range" {}
+variable "svc_ip_range" {}
 variable "svc_account_mail" {}
 variable "google_svc_account_id" {}
 variable "google_svc_account_name" {}
