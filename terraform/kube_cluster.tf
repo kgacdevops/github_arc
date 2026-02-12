@@ -1,14 +1,5 @@
-resource "google_compute_network" "vpc_network" {
-  name                          = var.vpc_name
-  project                       = var.project_id
-  auto_create_subnetworks       = true
-  mtu                           = var.mtu_val
-  routing_mode                  = "GLOBAL"
-  bgp_best_path_selection_mode  = "STANDARD"
-}
-
 resource "google_container_cluster" "primary" {
-  name                      = var.kube_cluster_name
+  name                      = "${var.prefix}-cluster"
   location                  = var.zone_name
   deletion_protection       = false
   remove_default_node_pool  = true
@@ -16,7 +7,7 @@ resource "google_container_cluster" "primary" {
 }
 
 resource "google_container_node_pool" "primary_preemptible_nodes" {
-  name       = var.kube_cluster_node_pool_name
+  name       = "${var.prefix}-node-pool"
   location   = google_container_cluster.primary.location
   cluster    = google_container_cluster.primary.name
   node_count = var.kube_cluster_node_count
