@@ -11,5 +11,5 @@ svc_ip_range                    = "10.0.32.0/20"
 google_svc_account_id           = "kg-svc-account"
 google_svc_account_name         = "kg-svc-account-name"
 
-kube_cluster_node_count         = 1
+kube_cluster_node_count         = 3
 kube_cluster_machine_type       = "e2-medium"
