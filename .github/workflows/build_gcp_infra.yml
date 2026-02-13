@@ -20,6 +20,7 @@ jobs:
     name: Build Infrastructure
     runs-on: [ubuntu-latest]
     env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
       TERRAFORM_VERSION: 1.7.5
       GCP_PROJECT_NUM: 390209572226
       GCP_PROJECT_ID: project-235e2136-7c2e-4409-bad
