@@ -7,8 +7,8 @@ resource "google_container_cluster" "primary" {
   network                   = var.vpc_self_link
   subnetwork                = var.subnet_self_link
   ip_allocation_policy {
-    cluster_secondary_range_name  = "pod-ranges"
-    services_secondary_range_name = "services-range"
+    cluster_secondary_range_name  = "${var.prefix}-pods"
+    services_secondary_range_name = "${var.prefix}-svc"
   }
 }
 
