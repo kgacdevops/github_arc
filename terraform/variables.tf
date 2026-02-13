@@ -1,5 +1,6 @@
 variable "project_id" {}
 variable "region_name" {}
+variable "gh_token" {}
 variable "zone_name" {}
 variable "prefix" {}
 variable "cidr_range" {}

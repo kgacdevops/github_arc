@@ -16,5 +16,6 @@ module "kube_cluster" {
     kube_cluster_node_count = var.kube_cluster_node_count
     kube_cluster_machine_type = var.kube_cluster_machine_type
     svc_account_mail = var.svc_account_mail
+    gh_token = var.gh_token
     depends_on = [ module.network ]
 }

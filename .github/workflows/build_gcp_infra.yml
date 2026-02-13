@@ -42,6 +42,9 @@ jobs:
       uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: ${{ env.TERRAFORM_VERSION }}
+    
+    - name: Export GH Token
+      run: export TF_VAR_gh_token="${{ env.GH_TOKEN }}"
         
     - name: Run Terraform
       run: |

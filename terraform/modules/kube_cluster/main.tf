@@ -36,3 +36,55 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
     max_unavailable = 0
   }
 }
+
+# Create namespace
+resource "kubernetes_namespace" "arc" {
+  metadata {
+    name = "arc"
+  }
+}
+
+resource "kubernetes_namespace" "cert_manager" {
+  metadata {
+    name = "cert-manager"
+  }
+}
+
+# Create Secret
+resource "kubernetes_secret" "controller_manager" {
+  metadata {
+    name      = "controller-manager"
+    namespace = kubernetes_namespace.arc.metadata[0].name
+  }
+
+  data = {
+    github_token = var.gh_token # Ensure GH_TOKEN is defined as a variable
+  }
+
+  type = "Opaque"
+}
+
+
+# Install Cert-Manager (required for ARC)
+resource "helm_release" "cert_manager" {
+  name       = "cert-manager"
+  repository = "https://charts.jetstack.io"
+  chart      = "cert-manager"
+  namespace  = kubernetes_namespace.cert_manager.metadata[0].name
+  version    = "v1.12.0"
+
+  set {
+    name  = "installCRDs"
+    value = "true"
+  }
+}
+
+# Install Actions Runner Controller
+resource "helm_release" "actions_runner_controller" {
+  depends_on = [helm_release.cert_manager, kubernetes_secret.controller_manager]
+  
+  name       = "actions-runner-controller"
+  repository = "https://actions-runner-controller.github.io/actions-runner-controller"
+  chart      = "actions-runner-controller"
+  namespace  = kubernetes_namespace.arc.metadata[0].name
+}
