@@ -44,7 +44,7 @@ jobs:
         terraform_version: ${{ env.TERRAFORM_VERSION }}
     
     - name: Export GH Token
-      run: export TF_VAR_gh_token="${{ env.GH_TOKEN }}"
+      run: echo "TF_VAR_gh_token=${{ env.GH_TOKEN }}" >> $GITHUB_ENV
         
     - name: Run Terraform
       run: |
