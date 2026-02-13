@@ -48,7 +48,7 @@ resource "kubernetes_namespace_v1" "cert_manager" {
 }
 
 # Create Secret
-resource "kubernetes_secret" "controller_manager" {
+resource "kubernetes_secret_v1" "controller_manager" {
   metadata {
     name      = "controller-manager"
     namespace = kubernetes_namespace_v1.arc.metadata[0].name
@@ -78,7 +78,7 @@ resource "helm_release" "cert_manager" {
 
 # Install Actions Runner Controller
 resource "helm_release" "actions_runner_controller" {
-  depends_on = [helm_release.cert_manager, kubernetes_secret.controller_manager]
+  depends_on = [helm_release.cert_manager, kubernetes_secret_v1.controller_manager]
   
   name       = "actions-runner-controller"
   repository = "https://actions-runner-controller.github.io/actions-runner-controller"
