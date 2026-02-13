@@ -4,6 +4,12 @@ resource "google_container_cluster" "primary" {
   deletion_protection       = false
   remove_default_node_pool  = true
   initial_node_count        = var.kube_cluster_node_count
+  network                   = var.vpc_self_link
+  subnetwork                = var.subnet_self_link
+  ip_allocation_policy {
+    cluster_secondary_range_name  = "pod-ranges"
+    services_secondary_range_name = "services-range"
+  }
 }
 
 resource "google_container_node_pool" "primary_preemptible_nodes" {

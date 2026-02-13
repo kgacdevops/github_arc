@@ -1,4 +1,5 @@
-variable "vpc_id" {}
+variable "vpc_self_link" {}
+variable "subnet_self_link" {}
 variable "zone_name" {}
 variable "prefix" {}
 variable "kube_cluster_node_count" {}

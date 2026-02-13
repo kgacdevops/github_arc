@@ -9,7 +9,8 @@ module "network" {
 
 module "kube_cluster" {
     source = "./modules/kube_cluster"
-    vpc_id = module.network.vpc_id
+    vpc_self_link = module.network.vpc_self_link
+    subnet_self_link = module.network.subnet_self_link
     prefix = var.prefix
     zone_name = var.zone_name
     kube_cluster_node_count = var.kube_cluster_node_count
