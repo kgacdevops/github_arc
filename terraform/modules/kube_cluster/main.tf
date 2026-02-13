@@ -35,13 +35,13 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 }
 
 # Create namespace
-resource "kubernetes_namespace" "arc" {
+resource "kubernetes_namespace_v1" "arc" {
   metadata {
     name = "arc"
   }
 }
 
-resource "kubernetes_namespace" "cert_manager" {
+resource "kubernetes_namespace_v1" "cert_manager" {
   metadata {
     name = "cert-manager"
   }
@@ -51,7 +51,7 @@ resource "kubernetes_namespace" "cert_manager" {
 resource "kubernetes_secret" "controller_manager" {
   metadata {
     name      = "controller-manager"
-    namespace = kubernetes_namespace.arc.metadata[0].name
+    namespace = kubernetes_namespace_v1.arc.metadata[0].name
   }
 
   data = {
@@ -67,7 +67,7 @@ resource "helm_release" "cert_manager" {
   name       = "cert-manager"
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
-  namespace  = kubernetes_namespace.cert_manager.metadata[0].name
+  namespace  = kubernetes_namespace_v1.cert_manager.metadata[0].name
   version    = "v1.12.0"
 
   set = [{
@@ -83,5 +83,5 @@ resource "helm_release" "actions_runner_controller" {
   name       = "actions-runner-controller"
   repository = "https://actions-runner-controller.github.io/actions-runner-controller"
   chart      = "actions-runner-controller"
-  namespace  = kubernetes_namespace.arc.metadata[0].name
+  namespace  = kubernetes_namespace_v1.arc.metadata[0].name
 }
