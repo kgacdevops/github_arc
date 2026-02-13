@@ -6,9 +6,17 @@ resource "google_container_cluster" "primary" {
   initial_node_count        = var.kube_cluster_node_count
   network                   = var.vpc_self_link
   subnetwork                = var.subnet_self_link
+  
   ip_allocation_policy {
     cluster_secondary_range_name  = "${var.prefix}-pods"
     services_secondary_range_name = "${var.prefix}-svc"
+  }
+
+  master_authorized_networks_config {
+    cidr_blocks {
+      cidr_block   = "0.0.0.0/0" 
+      display_name = "Allow-All"
+    }
   }
 }
 
