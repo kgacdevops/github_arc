@@ -26,7 +26,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
       "https://www.googleapis.com/auth/cloud-platform"
     ]
     metadata = {
-      startup-script = file("${path.module}/scripts/runner-setup.sh")
+      user-startup-script = file("${path.module}/scripts/runner-setup.sh")
     }
   }
 
