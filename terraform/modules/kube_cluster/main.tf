@@ -39,12 +39,14 @@ resource "kubernetes_namespace_v1" "arc" {
   metadata {
     name = "arc"
   }
+  depends_on = [ google_container_cluster.primary, google_container_node_pool.primary_preemptible_nodes ]
 }
 
 resource "kubernetes_namespace_v1" "cert_manager" {
   metadata {
     name = "cert-manager"
   }
+  depends_on = [ google_container_cluster.primary, google_container_node_pool.primary_preemptible_nodes ]
 }
 
 # Create Secret
@@ -53,14 +55,12 @@ resource "kubernetes_secret_v1" "controller_manager" {
     name      = "controller-manager"
     namespace = kubernetes_namespace_v1.arc.metadata[0].name
   }
-
   data = {
-    github_token = var.gh_token # Ensure GH_TOKEN is defined as a variable
+    github_token = var.gh_token
   }
-
   type = "Opaque"
+  depends_on = [ google_container_cluster.primary, google_container_node_pool.primary_preemptible_nodes ]
 }
-
 
 # Install Cert-Manager (required for ARC)
 resource "helm_release" "cert_manager" {
@@ -74,14 +74,15 @@ resource "helm_release" "cert_manager" {
     name  = "installCRDs"
     value = "true"
   }]
+
+  depends_on = [ google_container_cluster.primary, google_container_node_pool.primary_preemptible_nodes ]
 }
 
 # Install Actions Runner Controller
-resource "helm_release" "actions_runner_controller" {
-  depends_on = [helm_release.cert_manager, kubernetes_secret_v1.controller_manager]
-  
+resource "helm_release" "actions_runner_controller" {  
   name       = "actions-runner-controller"
   repository = "https://actions-runner-controller.github.io/actions-runner-controller"
   chart      = "actions-runner-controller"
   namespace  = kubernetes_namespace_v1.arc.metadata[0].name
+  depends_on = [ google_container_cluster.primary, google_container_node_pool.primary_preemptible_nodes, helm_release.cert_manager, kubernetes_secret_v1.controller_manager]
 }
