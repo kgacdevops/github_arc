@@ -25,9 +25,6 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
     oauth_scopes    = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
-    metadata = {
-      user-startup-script = file("${path.module}/scripts/runner-setup.sh")
-    }
   }
 
   upgrade_settings {
