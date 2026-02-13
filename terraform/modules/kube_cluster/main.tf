@@ -73,10 +73,10 @@ resource "helm_release" "cert_manager" {
   namespace  = kubernetes_namespace.cert_manager.metadata[0].name
   version    = "v1.12.0"
 
-  set {
+  set = [{
     name  = "installCRDs"
     value = "true"
-  }
+  }]
 }
 
 # Install Actions Runner Controller
