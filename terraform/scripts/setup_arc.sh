@@ -10,7 +10,7 @@ kubectl delete validatingwebhookconfiguration cert-manager-webhook || echo "No w
 kubectl delete mutatingwebhookconfiguration cert-manager-webhook || echo "No webhook found"
 
 # Create Cert namespace
-kubectl create namespace cert-manager
+kubectl create namespace cert-manager || echo "Namespace exists"
 
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
@@ -18,7 +18,7 @@ helm repo update
 helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.12.0 --set installCRDs=true
 
 # Create namespace
-kubectl create namespace "$arc_namespace"
+kubectl create namespace "$arc_namespace" || echo "Namespace exists"
 
 # Create Secret
 kubectl create secret generic controller-manager -n "$arc_namespace" --from-literal=github_token=$GITHUB_PAT
