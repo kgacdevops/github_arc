@@ -1,5 +1,5 @@
-name: Build ARC Infrastructure
-run-name: Build ARC Infrastructure - ${{ github.event.inputs.CLOUD_PROVIDER }} - ${{ github.event.inputs.ACTION }}
+name: build arc infra
+run-name: build arc infra - ${{ github.event.inputs.CLOUD_PROVIDER }} - ${{ github.event.inputs.ACTION }}
 on:
   workflow_dispatch:
     inputs:
@@ -40,7 +40,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         ref: ${{ github.ref_name }}
-        
+
     # Cloud-specific Auth Steps
     - name: Setup up Google Cloud Auth
       if: github.event.inputs.CLOUD_PROVIDER == 'gcp'
