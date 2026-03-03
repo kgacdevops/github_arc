@@ -1,5 +1,5 @@
-name: Build GCP Infrastructure
-run-name: Build GCP Infrastructure - ${{ github.event.inputs.ACTION }}
+name: Build ARC Infrastructure
+run-name: Build ARC Infrastructure - ${{ github.event.inputs.CLOUD_PROVIDER }} - ${{ github.event.inputs.ACTION }}
 on:
   workflow_dispatch:
     inputs:
@@ -11,6 +11,13 @@ on:
         - apply
         - destroy
         - skip
+      CLOUD_PROVIDER:
+        description: "Cloud Provider"
+        type: choice
+        options:
+        - gcp
+        - azure
+        - aws
       RUN_INSTALL_ARC:
         description: "Install ARC"
         type: boolean
@@ -27,21 +34,25 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       TERRAFORM_VERSION: 1.7.5
-      GCP_PROJECT_NUM: 390209572226
-      GCP_PROJECT_ID: project-235e2136-7c2e-4409-bad
-      SVC_ACCOUNT: terraform-gcp-sa
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ github.ref_name }}
-
+    # Cloud-specific Auth Steps
     - name: Setup up Google Cloud Auth
+      if: github.event.inputs.CLOUD_PROVIDER == 'gcp'
       id: auth
+      env:
+        GCP_PROJECT_NUM: 390209572226
+        GCP_PROJECT_ID: project-235e2136-7c2e-4409-bad
+        SVC_ACCOUNT: terraform-gcp-sa
       uses: google-github-actions/auth@v2
       with:
         workload_identity_provider: "projects/${{ env.GCP_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider"
         service_account: "${{ env.SVC_ACCOUNT }}@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com"
+    
+    # Terraform Steps
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.ref_name }}
 
     - name: Setup Terraform
       if: github.event.inputs.ACTION != 'skip'
@@ -56,7 +67,7 @@ jobs:
     - name: Run Terraform
       if: github.event.inputs.ACTION != 'skip'
       run: |
-        cd terraform
+        cd ${{ github.event.inputs.CLOUD_PROVIDER }}/terraform
         terraform init
         terraform plan
         if [[ "${{ inputs.ACTION }}" == "apply" ]]; then
@@ -64,15 +75,16 @@ jobs:
         elif [[ "${{ inputs.ACTION }}" == "destroy" ]]; then
           terraform destroy -auto-approve
         fi  
-
+    
+    # Post Terraform Steps - Install/Setup ARC
     - name: Install GKE Auth Plugin
-      if: github.event.inputs.RUN_INSTALL_ARC == 'true'
+      if: github.event.inputs.CLOUD_PROVIDER == 'gcp' && github.event.inputs.RUN_INSTALL_ARC == 'true' 
       uses: "google-github-actions/setup-gcloud@v2"
       with:
         install_components: "gke-gcloud-auth-plugin"
     
     - name: Authenticate to GKE cluster
-      if: github.event.inputs.RUN_INSTALL_ARC == 'true'
+      if: github.event.inputs.CLOUD_PROVIDER == 'gcp' && github.event.inputs.RUN_INSTALL_ARC == 'true'
       uses: google-github-actions/get-gke-credentials@v2
       with:
         cluster_name: arc-runner-cluster
@@ -83,5 +95,5 @@ jobs:
       run: |
         pwd
         ls -l
-        chmod ugo+rwx terraform/scripts/setup_arc.sh
-        ./terraform/scripts/setup_arc.sh
+        chmod ugo+rwx ${{ github.event.inputs.CLOUD_PROVIDER }}/terraform/scripts/setup_arc.sh
+        ./${{ github.event.inputs.CLOUD_PROVIDER }}/terraform/scripts/setup_arc.sh
