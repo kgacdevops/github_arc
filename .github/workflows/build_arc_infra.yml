@@ -35,6 +35,12 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       TERRAFORM_VERSION: 1.7.5
     steps:
+    # Repo checkout
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.ref_name }}
+        
     # Cloud-specific Auth Steps
     - name: Setup up Google Cloud Auth
       if: github.event.inputs.CLOUD_PROVIDER == 'gcp'
@@ -49,11 +55,6 @@ jobs:
         service_account: "${{ env.SVC_ACCOUNT }}@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com"
     
     # Terraform Steps
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ github.ref_name }}
-
     - name: Setup Terraform
       if: github.event.inputs.ACTION != 'skip'
       uses: hashicorp/setup-terraform@v3
