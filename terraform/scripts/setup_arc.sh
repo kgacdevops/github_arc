@@ -17,6 +17,9 @@ helm repo update
 
 helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.12.0 --set installCRDs=true
 
+# If time out errors when using helm, use below direct setup:
+# kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.crds.yaml
+
 # Create namespace
 kubectl create namespace "$arc_namespace" || echo "Namespace exists"
 
