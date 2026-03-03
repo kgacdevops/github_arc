@@ -1,4 +1,4 @@
-name: build arc infra
+name: Build Arc Infra
 run-name: build arc infra - ${{ github.event.inputs.CLOUD_PROVIDER }} - ${{ github.event.inputs.ACTION }}
 on:
   workflow_dispatch:
