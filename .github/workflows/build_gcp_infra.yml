@@ -58,13 +58,19 @@ jobs:
         fi  
 
     - name: Install GKE Auth Plugin
-      uses: simenandre/setup-gke-gcloud-auth-plugin@v1  
+      uses: "google-github-actions/setup-gcloud@v2"
+      with:
+        install_components: "gke-gcloud-auth-plugin"
+    
+    - name: Authenticate to GKE cluster
+      uses: google-github-actions/get-gke-credentials@v2
+      with:
+        cluster_name: arc-runner-cluster
+        location: us-central1-a
 
     - name: Setup Arc
-      env:
-        CLUSTER_NAME: arc-runner-cluster
-        CLUSTER_REGION: us-central1-a
-        PROJECT_ID: project-235e2136-7c2e-4409-bad
       run: |
-        gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --location ${{ env.CLUSTER_REGION }} --project ${{ env.PROJECT_ID }}
-        bash ./scripts/setup_arc.sh
+        pwd
+        ls -l
+        chmod ugo+rwx scripts/setup_arc.sh
+        ./scripts/setup_arc.sh
