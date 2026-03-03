@@ -10,6 +10,11 @@ on:
         - plan
         - apply
         - destroy
+        - skip
+      RUN_INSTALL_ARC:
+        description: "Install ARC"
+        type: bool
+        default: true
 
 permissions:
   id-token: write
@@ -39,14 +44,17 @@ jobs:
         service_account: "${{ env.SVC_ACCOUNT }}@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com"
 
     - name: Setup Terraform
+      if: github.event.inputs.ACTION != 'skip'
       uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: ${{ env.TERRAFORM_VERSION }}
     
     - name: Export GH Token
+      if: github.event.inputs.ACTION != 'skip'
       run: echo "TF_VAR_gh_token=${{ env.GH_TOKEN }}" >> $GITHUB_ENV
         
     - name: Run Terraform
+      if: github.event.inputs.ACTION != 'skip'
       run: |
         cd terraform
         terraform init
@@ -58,17 +66,20 @@ jobs:
         fi  
 
     - name: Install GKE Auth Plugin
+      if: github.event.inputs.RUN_INSTALL_ARC == 'true'
       uses: "google-github-actions/setup-gcloud@v2"
       with:
         install_components: "gke-gcloud-auth-plugin"
     
     - name: Authenticate to GKE cluster
+      if: github.event.inputs.RUN_INSTALL_ARC == 'true'
       uses: google-github-actions/get-gke-credentials@v2
       with:
         cluster_name: arc-runner-cluster
         location: us-central1-a
 
     - name: Setup Arc
+      if: github.event.inputs.RUN_INSTALL_ARC == 'true'
       run: |
         pwd
         ls -l
