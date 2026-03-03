@@ -33,3 +33,8 @@ helm install "$arcNs" actions-runner-controller/actions-runner-controller -n "$a
 
 # Display logs
 # kubectl logs <podname> -n "$arcNs"
+
+# Break the lock happened in the webhook (if required)
+# kubectl delete validatingwebhookconfiguration cert-manager-webhook
+# kubectl delete mutatingwebhookconfiguration cert-manager-webhook
+# helm uninstall [RELEASE_NAME] -n [NAMESPACE]
