@@ -72,5 +72,5 @@ jobs:
       run: |
         pwd
         ls -l
-        chmod ugo+rwx scripts/setup_arc.sh
-        ./scripts/setup_arc.sh
+        chmod ugo+rwx terraform/scripts/setup_arc.sh
+        ./terraform/scripts/setup_arc.sh
