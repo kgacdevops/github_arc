@@ -9,6 +9,7 @@ resource "google_compute_subnetwork" "gke_subnet" {
   ip_cidr_range            = var.cidr_range
   region                   = var.region_name
   network                  = google_compute_network.vpc_network.id
+  private_ip_google_access = true
 
   secondary_ip_range {
     range_name    = "${var.prefix}-pods"
