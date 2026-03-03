@@ -49,6 +49,6 @@ resource "terraform_data" "cluster_initializer" {
   }
 
   provisioner "local-exec" {
-    command = "gcloud container clusters get-credentials ${google_container_cluster.primary.name} --region ${google_container_cluster.primary.location} --project ${var.project_id} && sudo apt-get update && sudo apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin && bash ./scripts/setup_arc.sh"
+    command = "gcloud container clusters get-credentials ${google_container_cluster.primary.name} --region ${google_container_cluster.primary.location} --project ${var.project_id} && gcloud components install gke-gcloud-auth-plugin && bash ./scripts/setup_arc.sh"
   }
 }
