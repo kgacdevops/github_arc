@@ -5,6 +5,9 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller
 helm repo update
 
+# Install Plugin
+gcloud components install gke-gcloud-auth-plugin
+
 # Create Cert namespace
 kubectl create namespace cert-manager
 
