@@ -21,7 +21,7 @@ helm install cert-manager jetstack/cert-manager --namespace cert-manager --versi
 kubectl create namespace "$arc_namespace" || echo "Namespace exists"
 
 # Create Secret
-kubectl create secret generic controller-manager -n "$arc_namespace" --from-literal=github_token=$GITHUB_PAT
+kubectl create secret generic controller-manager -n "$arc_namespace" --from-literal=github_token=$GITHUB_PAT || echo "Secrets already exists"
 
 # Install arc
 helm install arc actions-runner-controller/actions-runner-controller -n "$arc_namespace"
