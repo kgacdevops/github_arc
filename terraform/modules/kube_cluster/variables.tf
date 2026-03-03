@@ -6,3 +6,4 @@ variable "kube_cluster_node_count" {}
 variable "kube_cluster_machine_type" {}
 variable "svc_account_mail" {}
 variable "gh_token" {}
+variable "project_id" {}

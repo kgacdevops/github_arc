@@ -49,6 +49,9 @@ resource "terraform_data" "cluster_initializer" {
   }
 
   provisioner "local-exec" {
-    command = "bash ./scripts/setup_arc.sh"
+    command = <<EOT 
+      gcloud container clusters get-credentials ${google_container_cluster.primary.name} --region ${google_container_cluster.primary.location} --project ${var.project_id}
+      bash ./scripts/setup_arc.sh
+    EOT
   }
 }
