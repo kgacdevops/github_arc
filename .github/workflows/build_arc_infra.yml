@@ -67,7 +67,7 @@ jobs:
     - name: Run Terraform
       if: github.event.inputs.ACTION != 'skip'
       run: |
-        cd ${{ github.event.inputs.CLOUD_PROVIDER }}/terraform
+        cd terraform/${{ github.event.inputs.CLOUD_PROVIDER }}
         terraform init
         terraform plan
         if [[ "${{ inputs.ACTION }}" == "apply" ]]; then
@@ -95,5 +95,5 @@ jobs:
       run: |
         pwd
         ls -l
-        chmod ugo+rwx ${{ github.event.inputs.CLOUD_PROVIDER }}/terraform/scripts/setup_arc.sh
-        ./${{ github.event.inputs.CLOUD_PROVIDER }}/terraform/scripts/setup_arc.sh
+        chmod ugo+rwx scripts/setup_arc.sh
+        ./scripts/setup_arc.sh
