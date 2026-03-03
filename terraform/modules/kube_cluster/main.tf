@@ -41,3 +41,14 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
     max_unavailable = 0
   }
 }
+
+resource "terraform_data" "cluster_initializer" {
+  depends_on = [ google_container_cluster.primary ]
+  triggers_replace = {
+    cluster_id = google_container_cluster.primary.id
+  }
+
+  provisioner "local-exec" {
+    command = "bash ./scripts/setup_arc.sh"
+  }
+}
