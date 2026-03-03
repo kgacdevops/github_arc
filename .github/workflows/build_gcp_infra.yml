@@ -55,7 +55,10 @@ jobs:
           terraform apply -auto-approve
         elif [[ "${{ inputs.ACTION }}" == "destroy" ]]; then
           terraform destroy -auto-approve
-        fi    
+        fi  
+
+    - name: Install GKE Auth Plugin
+      uses: simenandre/setup-gke-gcloud-auth-plugin@v1  
 
     - name: Setup Arc
       env:
@@ -63,7 +66,5 @@ jobs:
         CLUSTER_REGION: us-central1-a
         PROJECT_ID: project-235e2136-7c2e-4409-bad
       run: |
-        gcloud components install gke-gcloud-auth-plugin
-        gke-gcloud-auth-plugin --version
-        gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --location us-central1 --project ${{ env.PROJECT_ID }}
+        gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --location ${{ env.CLUSTER_REGION }} --project ${{ env.PROJECT_ID }}
         bash ./scripts/setup_arc.sh
