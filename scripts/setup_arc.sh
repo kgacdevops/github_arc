@@ -3,22 +3,18 @@ arc_namespace="arc"
 # Install helm
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller
+helm repo add jetstack https://charts.jetstack.io
 helm repo update
 
 # Clean up Webhooks
 kubectl delete validatingwebhookconfiguration cert-manager-webhook || echo "No webhook found"
 kubectl delete mutatingwebhookconfiguration cert-manager-webhook || echo "No webhook found"
 
-# Create Cert namespace
+# Create Cert manager
 kubectl create namespace cert-manager || echo "Namespace exists"
-
-helm repo add jetstack https://charts.jetstack.io
-helm repo update
-
-helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.12.0 --set installCRDs=true
-
+# helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.12.0 --set installCRDs=true
 # If time out errors when using helm, use below direct setup:
-# kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.crds.yaml
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.crds.yaml 
 
 # Create namespace
 kubectl create namespace "$arc_namespace" || echo "Namespace exists"
