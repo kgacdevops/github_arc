@@ -91,10 +91,21 @@ jobs:
         cluster_name: arc-runner-cluster
         location: us-central1-a
 
-    - name: Setup Arc
+    - name: Install ARC Controller
       if: github.event.inputs.RUN_INSTALL_ARC == 'true'
       run: |
-        pwd
-        ls -l
-        chmod ugo+rwx scripts/setup_arc.sh
-        ./scripts/setup_arc.sh
+        helm upgrade --install arc-controller \
+          --namespace "arc-systems" \
+          --create-namespace \
+          oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller
+
+    - name: Install Runner Scale Set
+      if: github.event.inputs.RUN_INSTALL_ARC == 'true'
+      run: |
+        # Creates the actual runners that will pick up your jobs
+        helm upgrade --install "gcp-runner-set" \
+          --namespace "arc-runners" \
+          --create-namespace \
+          --set githubConfigUrl="https://github.com/${{ github.repository_owner }}" \
+          --set githubConfigSecret.github_token="${{ env.GH_TOKEN }}" \
+          oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
