@@ -1,26 +1,29 @@
-arc_namespace="arc"
+#!/bin/bash
+set -e
 
-# Install helm
+# Variables
+arc_namespace="arc"
+cert_mgr_ver="v1.12.0"
+
+# Add Helm Repos
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller
+helm repo add actions-runner-controller https://actions-runner-controller.github.io
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
 
-# Clean up Webhooks
-kubectl delete validatingwebhookconfiguration cert-manager-webhook || echo "No webhook found"
-kubectl delete mutatingwebhookconfiguration cert-manager-webhook || echo "No webhook found"
+# Install Full Cert-Manager (Includes CRDs + Controllers)
+echo "Installing Cert-Manager..."
+kubectl apply -f "https://github.com/${cert_mgr_ver}/cert-manager.yaml"
 
-# Create Cert manager
-kubectl create namespace cert-manager || echo "Namespace exists"
-# helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.12.0 --set installCRDs=true || { echo "Failed creating cert manager"; exit 1; }
-# If time out errors when using helm, use below direct setup:
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.crds.yaml || { echo "Failed creating cert manager"; exit 1; }
+# Wait for Cert-Manager pods to be ready
+# Without this, ARC will fail to find the 'serving-cert' secret
+echo "Waiting for Cert-Manager to be ready (this can take 2-3 minutes)..."
+kubectl wait --for=condition=Available deployment --all -n cert-manager --timeout=300s
 
-# Create namespace
+# 4. Prepare ARC Namespace and Secret
 kubectl create namespace "$arc_namespace" || echo "Namespace exists"
+kubectl create secret generic controller-manager -n "$arc_namespace" --from-literal=github_token="$GH_TOKEN" --dry-run=client -o yaml | kubectl apply -f -
 
-# Create Secret
-kubectl create secret generic controller-manager -n "$arc_namespace" --from-literal=github_token=$GITHUB_PAT || { echo "Failed creating secrets"; exit 1; }
-
-# Install arc
-helm install arc actions-runner-controller/actions-runner-controller -n "$arc_namespace" || { echo "Failed installing arc"; exit 1; }
+# 5. Install ARC
+echo "Installing Actions Runner Controller..."
+helm upgrade --install arc actions-runner-controller/actions-runner-controller -n "$arc_namespace" --set installCRDs=false
