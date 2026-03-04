@@ -3,6 +3,7 @@ set -e
 
 # Variables
 arc_namespace="arc"
+cert_mgr_namespace="cert-manager"
 cert_mgr_ver="v1.12.0"
 
 # Add Helm Repos
@@ -13,17 +14,17 @@ helm repo update
 
 # Install Full Cert-Manager (Includes CRDs + Controllers)
 echo "Installing Cert-Manager..."
-kubectl apply -f "https://github.com/${cert_mgr_ver}/cert-manager.yaml"
+kubectl create namespace "$cert_mgr_namespace" || echo "Namespace exists"
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/${cert_mgr_ver}/cert-manager.crds.yaml 
 
 # Wait for Cert-Manager pods to be ready
-# Without this, ARC will fail to find the 'serving-cert' secret
 echo "Waiting for Cert-Manager to be ready (this can take 2-3 minutes)..."
-kubectl wait --for=condition=Available deployment --all -n cert-manager --timeout=300s
+kubectl wait --for=condition=Available deployment --all -n "$cert_mgr_namespace" --timeout=300s
 
-# 4. Prepare ARC Namespace and Secret
+# Prepare ARC Namespace and Secret
 kubectl create namespace "$arc_namespace" || echo "Namespace exists"
-kubectl create secret generic controller-manager -n "$arc_namespace" --from-literal=github_token="$GH_TOKEN" --dry-run=client -o yaml | kubectl apply -f -
+kubectl create secret generic controller-manager -n "$arc_namespace" --from-literal=github_token=$GH_TOKEN
 
-# 5. Install ARC
+# Install ARC
 echo "Installing Actions Runner Controller..."
-helm upgrade --install arc actions-runner-controller/actions-runner-controller -n "$arc_namespace" --set installCRDs=false
+helm install arc actions-runner-controller/actions-runner-controller -n "$arc_namespace"
