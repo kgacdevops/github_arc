@@ -45,3 +45,16 @@ resource "google_compute_router_nat" "arc_vpc_nat" {
   nat_ip_allocate_option              = "AUTO_ONLY"
   project                             = var.project_id
 }
+
+resource "google_compute_firewall" "allow_egress_https" {
+  name                = "${var.prefix}-allow-egress-https"
+  network             = google_compute_network.vpc_network.name
+  direction           = "EGRESS"
+  priority            = 1000
+  allow {
+    protocol          = "tcp"
+    ports             = ["443"]
+  }
+  destination_ranges  = ["0.0.0.0/0"]
+  description         = "Allow HTTPS egress"
+}
