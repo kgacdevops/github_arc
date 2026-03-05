@@ -39,8 +39,8 @@ resource "google_compute_router" "arc_vpc_router" {
 
 resource "google_compute_router_nat" "arc_vpc_nat" {
   name                                = "${var.prefix}-nat"
-  router                              = google_computer_router.arc_vpc_router.name
-  region                              = google_computer_router.arc_vpc_router.region
+  router                              = google_compute_router.arc_vpc_router.name
+  region                              = google_compute_router.arc_vpc_router.region
   source_subnetwork_ip_ranges_to_nat  = "ALL_SUBNETWORKS_ALL_IP_RANGES"
   nat_ip_allocate_option              = "AUTO_ONLY"
   project                             = var.project_id
