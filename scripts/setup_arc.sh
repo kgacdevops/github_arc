@@ -25,7 +25,7 @@ kubectl wait --for=condition=Available deployment --all -n "$cert_mgr_namespace"
 
 # Prepare ARC Namespace and Secret
 kubectl create namespace "$arc_namespace" || echo "Namespace exists"
-kubectl create secret generic controller-manager -n "$arc_namespace" --from-literal=github_token="${{ env.GH_TOKEN }}" || echo "Secrets already exist"
+kubectl create secret generic controller-manager -n "$arc_namespace" --from-literal=github_token="$GH_TOKEN" || echo "Secrets already exist"
 
 # Install ARC
 echo "Installing Actions Runner Controller..."

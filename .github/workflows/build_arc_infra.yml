@@ -94,6 +94,7 @@ jobs:
     - name: Setup Arc
       if: github.event.inputs.RUN_INSTALL_ARC == 'true'
       run: |
+        export GH_TOKEN="${{ env.GH_TOKEN }}"
         chmod ugo+rwx scripts/setup_arc.sh
         ./scripts/setup_arc.sh
         kubectl apply -f terraform/${{ github.event.inputs.CLOUD_PROVIDER }}/manifest/runner.yaml
