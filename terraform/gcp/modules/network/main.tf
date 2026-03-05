@@ -59,3 +59,11 @@ resource "google_compute_firewall" "allow_egress_https" {
   destination_ranges  = ["0.0.0.0/0"]
   description         = "Allow HTTPS egress"
 }
+
+resource "google_compute_route" "default_internet_route" {
+  name             = "default-internet-gateway-route"
+  dest_range       = "0.0.0.0/0"
+  network          = google_compute_network.vpc_network.name
+  next_hop_gateway = "default-internet-gateway"
+  priority         = 1000
+}
