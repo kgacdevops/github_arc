@@ -16,6 +16,7 @@ helm repo update
 echo "Installing Cert-Manager..."
 kubectl create namespace "$cert_mgr_namespace" || echo "Namespace exists"
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/${cert_mgr_ver}/cert-manager.crds.yaml 
+sleep 30s
 
 # Wait for Cert-Manager pods to be ready
 echo "Waiting for Cert-Manager to be ready (this can take 2-3 minutes)..."
