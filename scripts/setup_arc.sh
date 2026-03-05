@@ -16,6 +16,7 @@ helm repo update
 echo "Installing Cert-Manager..."
 kubectl create namespace "$cert_mgr_namespace" || echo "Namespace exists"
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/${cert_mgr_ver}/cert-manager.crds.yaml 
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/${cert_mgr_ver}/cert-manager.yaml 
 sleep 30s
 
 # Wait for Cert-Manager pods to be ready
@@ -29,3 +30,5 @@ kubectl create secret generic controller-manager -n "$arc_namespace" --from-lite
 # Install ARC
 echo "Installing Actions Runner Controller..."
 helm install arc actions-runner-controller/actions-runner-controller -n "$arc_namespace"
+
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.crds.yaml 
