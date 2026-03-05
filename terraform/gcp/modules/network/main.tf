@@ -29,3 +29,19 @@ resource "google_compute_global_address" "private_ip_range" {
   prefix_length   = 28
   network         = google_compute_network.vpc_network.id
 }
+
+resource "google_compute_router" "arc_vpc_router" {
+  name            = "${var.prefix}-router"
+  network         = google_compute_network.vpc_network.name
+  region          = var.region_name
+  project         = var.project_id
+}
+
+resource "google_compute_router_nat" "arc_vpc_nat" {
+  name                                = "${var.prefix}-nat"
+  router                              = google_computer_router.arc_vpc_router.name
+  region                              = google_computer_router.arc_vpc_router.region
+  source_subnetwork_ip_ranges_to_nat  = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+  nat_ip_allocate_option              = "AUTO_ONLY"
+  project                             = var.project_id
+}

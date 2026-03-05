@@ -5,6 +5,7 @@ module "network" {
     region_name = var.region_name
     pods_ip_range = var.pods_ip_range
     svc_ip_range = var.svc_ip_range
+    project_id = var.project_id
 }
 
 module "kube_cluster" {
