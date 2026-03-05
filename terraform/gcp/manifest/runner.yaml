@@ -9,5 +9,5 @@ spec:
     spec:
       repository: kgacandole/github_arc
       labels:
+        - kg_gcp_runner
         - gke
-        - k8s

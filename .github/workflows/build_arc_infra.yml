@@ -96,3 +96,4 @@ jobs:
       run: |
         chmod ugo+rwx scripts/setup_arc.sh
         ./scripts/setup_arc.sh
+        kubectl apply -f terraform/${{ github.event.inputs.CLOUD_PROVIDER }}/manifest/runner.yaml
