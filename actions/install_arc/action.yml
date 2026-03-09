@@ -28,6 +28,7 @@ runs:
       location: ${{ inputs.regionName }}
 
   - name: Setup Arc
+    shell: bash
     run: |
       export GH_TOKEN="${{ env.GH_TOKEN }}"
       chmod ugo+rwx scripts/setup_arc.sh
