@@ -34,6 +34,8 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       TERRAFORM_VERSION: 1.7.5
+      CLUSTER_NAME: arc-runner-cluster
+      REGION: us-central1-a
     steps:
     # Repo checkout
     - name: Checkout Repository
@@ -78,22 +80,10 @@ jobs:
         fi  
     
     # Post Terraform Steps - Install/Setup ARC
-    - name: Install GKE Auth Plugin
-      if: github.event.inputs.CLOUD_PROVIDER == 'gcp' && github.event.inputs.RUN_INSTALL_ARC == 'true' 
-      uses: "google-github-actions/setup-gcloud@v2"
+    - name: Install ARC
+      if: github.event.inputs.RUN_INSTALL_ARC == 'true' && github.event.inputs.ACTION != 'destroy'
+      uses: kgacandole/github_arc/actions/install_arc@main
       with:
-        install_components: "gke-gcloud-auth-plugin"
-    
-    - name: Authenticate to GKE cluster
-      if: github.event.inputs.CLOUD_PROVIDER == 'gcp' && github.event.inputs.RUN_INSTALL_ARC == 'true'
-      uses: google-github-actions/get-gke-credentials@v2
-      with:
-        cluster_name: arc-runner-cluster
-        location: us-central1-a
-
-    - name: Setup Arc
-      if: github.event.inputs.RUN_INSTALL_ARC == 'true'
-      run: |
-        export GH_TOKEN="${{ env.GH_TOKEN }}"
-        chmod ugo+rwx scripts/setup_arc.sh
-        ./scripts/setup_arc.sh
+        cloudProvider: ${{ github.event.inputs.CLOUD_PROVIDER }}
+        clusterName: ${{ env.CLUSTER_NAME }}
+        regionName: ${{ env.REGION }}

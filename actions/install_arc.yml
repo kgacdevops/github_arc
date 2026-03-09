@@ -1,0 +1,34 @@
+name: Install ARC
+description: 'Install ARC'
+inputs:  
+  cloudProvider:
+    description: 'Cloud Provider'
+    type: string
+  clusterName:
+    description: 'Kubernetes Cluster Name'
+    type: string
+  regionName:
+    description: 'Region where Cluster is deployed'
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+  - name: Install GKE Auth Plugin
+    if: inputs.cloudProvider == 'gcp'
+    uses: "google-github-actions/setup-gcloud@v2"
+    with:
+      install_components: "gke-gcloud-auth-plugin"
+    
+  - name: Authenticate to GKE cluster
+    if: inputs.cloudProvider == 'gcp'
+    uses: google-github-actions/get-gke-credentials@v2
+    with:
+      cluster_name: ${{ inputs.clusterName }}
+      location: ${{ inputs.regionName }}
+
+  - name: Setup Arc
+    run: |
+      export GH_TOKEN="${{ env.GH_TOKEN }}"
+      chmod ugo+rwx scripts/setup_arc.sh
+      ./scripts/setup_arc.sh
