@@ -5,6 +5,10 @@ set -e
 arc_namespace="arc"
 cert_mgr_namespace="cert-manager"
 cert_mgr_ver="v1.12.0"
+secret_name="arc-secret"
+runner_label="kg-runner"
+git_owner_name="kgacandole"
+git_repo_name="github_arc"
 
 # Add Helm Repos
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
@@ -23,10 +27,14 @@ sleep 30s
 echo "Waiting for Cert-Manager to be ready (this can take 2-3 minutes)..."
 kubectl wait --for=condition=Available deployment --all -n "$cert_mgr_namespace" --timeout=300s
 
-# Prepare ARC Namespace and Secret
+# Create ARC Namespace
 kubectl create namespace "$arc_namespace" || echo "Namespace exists"
-kubectl create secret generic controller-manager -n "$arc_namespace" --from-literal=github_token="$GH_TOKEN" || echo "Secrets already exist"
+
+# Create Secret
+kubectl create secret generic "$secret_name" -n "$arc_namespace" --from-literal=github_token="$GH_TOKEN" || echo "Secrets already exist"
 
 # Install ARC
-echo "Installing Actions Runner Controller..."
-helm install arc actions-runner-controller/actions-runner-controller -n "$arc_namespace" --set authSecret.name="controller-manager" --set authSecret.github_token="github_token" --set github_app_id="" --set github_app_installation_id="" --set github_app_priv_key=""
+helm install arc -n "${arc_namespace}-systems" --create-namespace oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller
+
+# Install Runners
+helm install "$runner_label" -n "$arc_namespace" --create-namespace --set githubConfigUrl="https://github.com/$git_owner_name/$git_repo_name" --set githubConfigSecret="$secret_name" oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
