@@ -51,6 +51,6 @@ resource "google_compute_firewall" "allow_arc_port" {
     ports             = ["9443"]
   }
   source_ranges       = [google_container_cluster.primary.private_cluster_config[0].master_ipv4_cidr_block]
-  target_tags         = [google_container_cluster.primary.node_config[0].tags]
+  target_tags         = google_container_cluster.primary.node_config[0].tags
   description         = "Allow ARC Port"
 }
