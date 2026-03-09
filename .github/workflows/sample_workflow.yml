@@ -6,7 +6,7 @@ on:
 jobs:
   init:
     name: Initialize
-    runs-on: [kg-runner]
+    runs-on: [kg-gke-runner]
     steps:
     - name: Test Runner
       run: echo "Hello world!"
