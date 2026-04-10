@@ -71,7 +71,7 @@ jobs:
     - name: Get Runner IP
       if: github.event.inputs.CLOUD_PROVIDER == 'azure'
       run: |
-        IP=$(curl -s https://ipify.org)
+        IP=$(curl -sL https://api.ipify.org)
         echo "RUNNER_IP=$IP" >> $GITHUB_ENV
     
     - name: Whitelist Runner IP
