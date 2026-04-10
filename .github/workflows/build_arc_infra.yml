@@ -40,8 +40,6 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       TERRAFORM_VERSION: 1.7.5
       CLUSTER_NAME: arc-runner-cluster
-      ARM_USE_OIDC: true
-      ARM_USE_CLI: false
     steps:
     # Repo checkout
     - name: Checkout Repository
@@ -82,6 +80,12 @@ jobs:
         
     - name: Run Terraform
       if: github.event.inputs.ACTION != 'skip'
+      env:
+        ARM_USE_OIDC: true
+        ARM_USE_CLI: false
+        ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+        ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       run: |
         cd terraform/${{ github.event.inputs.CLOUD_PROVIDER }}
         terraform init
