@@ -4,5 +4,6 @@ terraform {
     storage_account_name = "arcrunnertfstate"
     container_name       = "tfstate-container"
     key                  = "terraform.tfstate"
+    use_azuread_auth     = true
   }
 }
