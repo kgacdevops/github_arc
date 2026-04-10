@@ -1,0 +1,30 @@
+## Setup backend config ##
+
+1. Create Resource Group for your tfstate file
+2. Create Storage Account for your tfstate
+3. Create Container for your tfstate
+    - Go to Storage Account, and select the storage account created in step 2
+    - Under 'Data storage', select 'Containers'
+    - Create the container
+
+## Setup App Permissions ##
+
+1. Go to 'App registrations'
+2. Click 'New registration'
+    - Add Name
+    - Supported account types: 'Single tenant only'
+3. Once created, select the registration and go to 'Certificates & secrets'
+    - Go to 'Federated credentials' tab
+    - Click 'Add credential'
+        - Federated credential scenario: 'Other issuer'
+        - Issuer: https://token.actions.githubusercontent.com
+        - Type: Claims matching expression
+        - Value: claims['sub'] matches 'repo:{orgname}/*:*'
+        - Audience: api://AzureADTokenExchange
+4. Assign permission
+    - Go to your subscription
+    - Go to 'Access Control (IAM)'
+    - Add role assignment
+    - Go to 'Privileged administrator roles' tab
+    - Assign the 'Contributor' role to the app registration
+    - Assign the 'Storage Blob Data Contributor' role to the app registration
