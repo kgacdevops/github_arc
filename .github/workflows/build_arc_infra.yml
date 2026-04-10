@@ -69,11 +69,13 @@ jobs:
     
     # Azure steps only - allow runner to access Blob
     - name: Get Runner IP
+      if: github.event.inputs.CLOUD_PROVIDER == 'azure'
       run: |
         IP=$(curl -s https://ipify.org)
         echo "RUNNER_IP=$IP" >> $GITHUB_ENV
     
     - name: Whitelist Runner IP
+      if: github.event.inputs.CLOUD_PROVIDER == 'azure'
       uses: azure/CLI@v1
       env:
         STORAGE_ACCOUNT_NAME: arcrunnertfstate
