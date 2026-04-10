@@ -18,6 +18,10 @@ on:
         - gcp
         - azure
         - aws
+      REGION:
+        description: "Region (Location)"
+        type: string
+        # us-central1-a - gcp
       RUN_INSTALL_ARC:
         description: "Install ARC"
         type: boolean
@@ -31,11 +35,11 @@ jobs:
   build_infra:
     name: Build Infrastructure
     runs-on: [ubuntu-latest]
+    environment: ${{ github.event.inputs.CLOUD_PROVIDER }}
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       TERRAFORM_VERSION: 1.7.5
       CLUSTER_NAME: arc-runner-cluster
-      REGION: us-central1-a
     steps:
     # Repo checkout
     - name: Checkout Repository
@@ -46,7 +50,6 @@ jobs:
     # Cloud-specific Auth Steps
     - name: Setup up Google Cloud Auth
       if: github.event.inputs.CLOUD_PROVIDER == 'gcp'
-      id: auth
       env:
         GCP_PROJECT_NUM: 390209572226
         GCP_PROJECT_ID: project-235e2136-7c2e-4409-bad
@@ -55,6 +58,14 @@ jobs:
       with:
         workload_identity_provider: "projects/${{ env.GCP_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider"
         service_account: "${{ env.SVC_ACCOUNT }}@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com"
+    
+    - name: Setup Azure Auth
+      if: github.event.inputs.CLOUD_PROVIDER == 'azure'
+      uses: azure/login@v2
+      with:
+        client-id: ${{ vars.AZURE_CLIENT_ID }}
+        tenant-id: ${{ vars.AZURE_TENANT_ID }}
+        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
     
     # Terraform Steps
     - name: Setup Terraform
@@ -86,4 +97,4 @@ jobs:
       with:
         cloudProvider: ${{ github.event.inputs.CLOUD_PROVIDER }}
         clusterName: ${{ env.CLUSTER_NAME }}
-        regionName: ${{ env.REGION }}
+        regionName: ${{ inputs.REGION }}
