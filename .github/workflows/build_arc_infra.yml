@@ -67,6 +67,23 @@ jobs:
         tenant-id: ${{ vars.AZURE_TENANT_ID }}
         subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
     
+    # Azure steps only - allow runner to access Blob
+    - name: Get Runner IP
+      run: |
+        IP=$(curl -s https://ipify.org)
+        echo "RUNNER_IP=$IP" >> $GITHUB_ENV
+    
+    - name: Whitelist Runner IP
+      uses: azure/CLI@v1
+      env:
+        STORAGE_ACCOUNT_NAME: arcrunnertfstate
+        RESOURCE_GROUP: tfstate-rg
+      with:
+        inlineScript: |
+          az storage account update --name ${{ env.STORAGE_ACCOUNT_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --public-network-access Enabled
+          az storage account network-rule add --account-name ${{ env.STORAGE_ACCOUNT_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --ip-address ${{ env.RUNNER_IP }}
+          sleep 30
+    
     # Terraform Steps
     - name: Setup Terraform
       if: github.event.inputs.ACTION != 'skip'
