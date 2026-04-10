@@ -38,8 +38,6 @@ jobs:
     environment: ${{ github.event.inputs.CLOUD_PROVIDER }}
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      TERRAFORM_VERSION: 1.7.5
-      CLUSTER_NAME: arc-runner-cluster
     steps:
     # Repo checkout
     - name: Checkout Repository
@@ -50,14 +48,10 @@ jobs:
     # Cloud-specific Auth Steps
     - name: Setup up Google Cloud Auth
       if: github.event.inputs.CLOUD_PROVIDER == 'gcp'
-      env:
-        GCP_PROJECT_NUM: 390209572226
-        GCP_PROJECT_ID: project-235e2136-7c2e-4409-bad
-        SVC_ACCOUNT: terraform-gcp-sa
       uses: google-github-actions/auth@v2
       with:
-        workload_identity_provider: "projects/${{ env.GCP_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider"
-        service_account: "${{ env.SVC_ACCOUNT }}@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com"
+        workload_identity_provider: "projects/${{ vars.GCP_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider"
+        service_account: "${{ vars.SVC_ACCOUNT }}@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com"
     
     - name: Setup Azure Auth
       if: github.event.inputs.CLOUD_PROVIDER == 'azure'
@@ -82,8 +76,11 @@ jobs:
         RESOURCE_GROUP: tfstate-rg
       with:
         inlineScript: |
+          echo "Whitelisting Runner IP"
           az storage account update --name ${{ env.STORAGE_ACCOUNT_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --public-network-access Enabled
           az storage account network-rule add --account-name ${{ env.STORAGE_ACCOUNT_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --ip-address ${{ env.RUNNER_IP }}
+
+          echo "Sleeping to propagate whitelisting"
           sleep 30
     
     # Terraform Steps
@@ -91,7 +88,7 @@ jobs:
       if: github.event.inputs.ACTION != 'skip'
       uses: hashicorp/setup-terraform@v3
       with:
-        terraform_version: ${{ env.TERRAFORM_VERSION }}
+        terraform_version: ${{ vars.TERRAFORM_VERSION }}
     
     - name: Export GH Token
       if: github.event.inputs.ACTION != 'skip'
@@ -121,5 +118,5 @@ jobs:
       uses: kgacandole/github_arc/actions/install_arc@main
       with:
         cloudProvider: ${{ github.event.inputs.CLOUD_PROVIDER }}
-        clusterName: ${{ env.CLUSTER_NAME }}
+        clusterName: ${{ vars.CLUSTER_NAME }}
         regionName: ${{ inputs.REGION }}

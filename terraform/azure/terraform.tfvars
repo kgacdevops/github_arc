@@ -1,2 +1,2 @@
 prefix = "arc"
-location = "US West 2"
+location = "westus2"
