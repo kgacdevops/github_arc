@@ -24,7 +24,7 @@ resource "azurerm_kubernetes_cluster" "arc_cluster" {
   network_profile {
     network_plugin              = "azure"
     network_plugin_mode         = "overlay"
-    data_plane                  = "cilium"
+    network_data_plane          = "cilium"
     network_policy              = "cilium"
     service_cidr                = var.service_cidr
     dns_service_ip              = var.dns_service_ip
