@@ -3,20 +3,26 @@ resource "azurerm_resource_group" "arc_rg" {
   location = var.location
 }
 
-resource "azurerm_kubernetes_cluster" "arc_cluster" {
-  name                    = "${var.prefix}-cluster"
-  location                = azurerm_resource_group.arc_rg.location
-  resource_group_name     = azurerm_resource_group.arc_rg.name
-  dns_prefix              = "${var.prefix}-dns"
-  private_cluster_enabled = true
+module "network" {
+    source            = "./modules/network"
+    prefix            = var.prefix
+    location          = azurerm_resource_group.arc_rg.location
+    rg_name           = azurerm_resource_group.arc_rg.name
+    vnet_cidr         = var.vnet_cidr
+    subnet_node_cidr  = var.subnet_node_cidr
+    subnet_api_cidr   = var.subnet_api_cidr
+}
 
-  default_node_pool {
-    name = "${var.prefix}nodepool"
-    node_count = 1
-    vm_size = "standard_d2_v3"
-  }
-
-  identity {
-    type = "SystemAssigned"
-  }
+module "kube_cluster" {
+    source                = "./modules/kube_cluster"
+    prefix                = var.prefix
+    node_count            = var.node_count
+    vm_size               = var.vm_size
+    location              = azurerm_resource_group.arc_rg.location
+    rg_name               = azurerm_resource_group.arc_rg.name
+    api_server_subnet_id  = module.network.api_server_subnet_id
+    nodes_subnet_id       = module.network.nodes_subnet_id
+    service_cidr          = var.service_cidr
+    dns_service_ip        = var.dns_service_ip
+    depends_on            = [ module.network ]
 }
