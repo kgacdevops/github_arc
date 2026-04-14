@@ -10,7 +10,7 @@ resource "azurerm_kubernetes_cluster" "arc_cluster" {
   dns_prefix            = "${var.prefix}-dns"
 
   default_node_pool {
-    name = "${var.prefix}-node-pool"
+    name = "${var.prefix}nodepool"
     node_count = 1
     vm_size = "Standard_D2_V2"
   }
