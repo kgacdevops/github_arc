@@ -1,3 +1,15 @@
+resource "azurerm_user_assigned_identity" "arc_identity" {
+  name                          = "${var.prefix}-id"
+  resource_group_name           = var.rg_name
+  location                      = var.location
+}
+
+resource "azurerm_role_assignment" "arc_vnet_contributor" {
+  scope                         = var.vnet_id
+  role_definition_name          = "Network Contributor"
+  principal_id                  = azurerm_user_assigned_identity.arc_identity.principal_id
+}
+
 resource "azurerm_kubernetes_cluster" "arc_cluster" {
   name                          = "${var.prefix}-cluster"
   location                      = var.location
@@ -29,4 +41,6 @@ resource "azurerm_kubernetes_cluster" "arc_cluster" {
     service_cidr                = var.service_cidr
     dns_service_ip              = var.dns_service_ip
   }
+
+  depends_on = [ azurerm_role_assignment.arc_vnet_contributor ]
 }

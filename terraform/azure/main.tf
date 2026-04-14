@@ -20,6 +20,7 @@ module "kube_cluster" {
     vm_size               = var.vm_size
     location              = azurerm_resource_group.arc_rg.location
     rg_name               = azurerm_resource_group.arc_rg.name
+    vnet_id               = module.network.vnet_id 
     api_server_subnet_id  = module.network.api_server_subnet_id
     nodes_subnet_id       = module.network.nodes_subnet_id
     service_cidr          = var.service_cidr
