@@ -15,7 +15,7 @@ resource "azurerm_subnet" "arc_nodes" {
 resource "azurerm_subnet" "arc_api_server" {
   name                 = "${var.prefix}-subnet-api-server"
   resource_group_name  = var.rg_name
-  virtual_network_name = azurerm_virtual_network.aks_vnet.name
+  virtual_network_name = azurerm_virtual_network.arc_vnet.name
   address_prefixes     = [var.subnet_api_cidr]
 
   delegation {
