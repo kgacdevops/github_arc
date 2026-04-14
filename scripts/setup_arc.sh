@@ -12,7 +12,7 @@ git_repo_name="github_arc"
 cloud_provider="$1"
 
 # Setup Dependencies
-if[ "$cloud_provider" == "azure" ]; then
+if [[ "$cloud_provider" == "azure" ]]; then
     echo "Setting up dependencies for temporary pod.."
     apt-get update && apt-get install -y git gzip tar curl
 fi
