@@ -9,13 +9,6 @@ secret_name="arc-secret"
 runner_label="kg-runner"
 git_owner_name="kgacandole"
 git_repo_name="github_arc"
-cloud_provider="$1"
-
-# Setup Dependencies
-if [[ "$cloud_provider" == "azure" ]]; then
-    echo "Setting up dependencies for temporary pod.."
-    tdnf install -y git gzip tar curl
-fi
 
 # Add Helm Repos
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
