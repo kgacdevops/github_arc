@@ -33,21 +33,16 @@ runs:
       cluster_name: ${{ inputs.clusterName }}
       location: ${{ inputs.regionName }}
 
-  - name: Setup Arc - GCP
-    if: inputs.cloudProvider == 'gcp'
+  - name: Setup Arc
     shell: bash
     run: |
       export GH_TOKEN="${{ env.GH_TOKEN }}"
-      chmod ugo+rwx scripts/setup_arc.sh
-      ./scripts/setup_arc.sh
-  
-  - name: Setup Arc - Azure
-    if: inputs.cloudProvider == 'azure'
-    uses: azure/CLI@v2
-    with:
-      inlineScript: |
+      if [ "${{ inputs.cloudProvider }}" == "azure" ]; then
         az account set --subscription ${{ inputs.subscriptionId }}
-        az aks command invoke \
-          --resource-group "${{ inputs.resourceGroupName }}" \
-          --name "${{ inputs.clusterName }}" \
-          --command "./scripts/setup_arc.sh"
+        az account show --query name -o tsv
+        az aks list --resource-group arc-aks-rg --query "[].name" -o table
+        #az aks command invoke --resource-group "${{ inputs.resourceGroupName }}" --name "${{ inputs.clusterName }}" --command "./scripts/setup_arc.sh"
+      else
+        chmod ugo+rwx scripts/setup_arc.sh
+        ./scripts/setup_arc.sh
+      fi
