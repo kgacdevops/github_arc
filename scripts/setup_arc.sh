@@ -9,9 +9,12 @@ secret_name="arc-secret"
 runner_label="kg-runner"
 git_owner_name="kgacandole"
 git_repo_name="github_arc"
+cloud_provider="$1"
 
 # Add Helm Repos
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+if [[ "$cloud_provider" != "azure" ]]; then
+    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+fi
 helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
