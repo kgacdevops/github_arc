@@ -43,6 +43,7 @@ runs:
     uses: azure/CLI@v2
     with:
       inlineScript: |
+        az account set --subscription ${{ vars.AZURE_SUBSCRIPTION_ID }}
         az aks command invoke \
           --resource-group "${{ inputs.resourceGroupName }}" \
           --name "${{ inputs.clusterName }}" \
