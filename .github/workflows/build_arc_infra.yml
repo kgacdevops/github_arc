@@ -121,3 +121,4 @@ jobs:
         clusterName: ${{ vars.CLUSTER_NAME }}
         regionName: ${{ inputs.REGION }}
         resourceGroupName: ${{ vars.AZURE_RESOURCE_GROUP_NAME }}
+        subscriptionId: ${{ vars.AZURE_SUBSCRIPTION_ID }}

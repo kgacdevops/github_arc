@@ -13,6 +13,9 @@ inputs:
   resourceGroupName:
     description: 'Name of resource group (for Azure only)'
     type: string
+  subscriptionId:
+    description: 'Subscription ID for your Azure Account'
+    type: string
 
 runs:
   using: "composite"
@@ -43,7 +46,7 @@ runs:
     uses: azure/CLI@v2
     with:
       inlineScript: |
-        az account set --subscription ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        az account set --subscription ${{ inputs.subscriptionId }}
         az aks command invoke \
           --resource-group "${{ inputs.resourceGroupName }}" \
           --name "${{ inputs.clusterName }}" \
