@@ -26,5 +26,8 @@
     - Go to 'Access Control (IAM)'
     - Add role assignment
     - Go to 'Privileged administrator roles' tab
-    - Assign the roles 'Contributor' and 'Role Based Access Control Administrator' to the app registration
+    - Assign the ff roles to the app registration:
+        - Contributor
+        - Role Based Access Control Administrator
+        - Azure Kubernetes Service Cluster Admin Role
     - Assign the 'Storage Blob Data Contributor' role to the app registration
