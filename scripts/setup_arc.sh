@@ -6,10 +6,10 @@ arc_namespace="arc"
 cert_mgr_namespace="cert-manager"
 cert_mgr_ver="v1.12.0"
 secret_name="arc-secret"
-runner_label="kg-runner"
 git_owner_name="kgacandole"
 git_repo_name="github_arc"
 cloud_provider="$1"
+runner_label="kg-runner-${cloud_provider}"
 
 # Add Helm Repos
 if [[ "$cloud_provider" != "azure" ]]; then
