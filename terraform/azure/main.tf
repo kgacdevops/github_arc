@@ -13,7 +13,7 @@ resource "azurerm_kubernetes_cluster" "arc_cluster" {
   default_node_pool {
     name = "${var.prefix}nodepool"
     node_count = 1
-    vm_size = "Standard_D2_V2"
+    vm_size = "standard_d2_v3"
   }
 
   identity {
