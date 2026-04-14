@@ -14,7 +14,7 @@ cloud_provider="$1"
 # Setup Dependencies
 if [[ "$cloud_provider" == "azure" ]]; then
     echo "Setting up dependencies for temporary pod.."
-    apt-get update && apt-get install -y git gzip tar curl
+    yum update && yum install -y git gzip tar curl
 fi
 
 # Add Helm Repos
