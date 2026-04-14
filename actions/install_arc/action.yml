@@ -10,6 +10,9 @@ inputs:
   regionName:
     description: 'Region where Cluster is deployed'
     type: string
+  resourceGroupName:
+    description: 'Name of resource group (for Azure only)'
+    type: string
 
 runs:
   using: "composite"
@@ -27,9 +30,20 @@ runs:
       cluster_name: ${{ inputs.clusterName }}
       location: ${{ inputs.regionName }}
 
-  - name: Setup Arc
+  - name: Setup Arc - GCP
+    if: inputs.cloudProvider == 'gcp'
     shell: bash
     run: |
       export GH_TOKEN="${{ env.GH_TOKEN }}"
       chmod ugo+rwx scripts/setup_arc.sh
       ./scripts/setup_arc.sh
+  
+  - name: Setup Arc - Azure
+    if: inputs.cloudProvider == 'azure'
+    uses: azure/CLI@v2
+    with:
+      inlineScript: |
+        az aks command invoke \
+          --resource-group "${{ inputs.resourceGroupName }}" \
+          --name "${{ inputs.clusterName }}" \
+          --command "./scripts/setup_arc.sh"
