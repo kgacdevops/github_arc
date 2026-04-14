@@ -41,7 +41,7 @@ runs:
         az account set --subscription ${{ inputs.subscriptionId }}
         az account show --query name -o tsv
         az aks list --resource-group arc-aks-rg --query "[].name" -o table
-        az aks command invoke --resource-group "${{ inputs.resourceGroupName }}" --name "${{ inputs.clusterName }}" --command "./scripts/setup_arc.sh"
+        az aks command invoke --resource-group "${{ inputs.resourceGroupName }}" --name "${{ inputs.clusterName }}" --file "scripts/setup_arc.sh" --command "chmod ugo+rwx setup_arc.sh && ./setup_arc.sh"
       else
         chmod ugo+rwx scripts/setup_arc.sh
         ./scripts/setup_arc.sh
