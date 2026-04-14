@@ -30,7 +30,8 @@ resource "azurerm_kubernetes_cluster" "arc_cluster" {
   }
 
   identity {
-    type                        = "SystemAssigned"
+    type                        = "UserAssigned"
+    identity_ids                = [azurerm_user_assigned_identity.arc_identity.id]
   }
 
   network_profile {
