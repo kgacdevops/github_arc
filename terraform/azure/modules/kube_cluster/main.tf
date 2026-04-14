@@ -6,8 +6,8 @@ resource "azurerm_kubernetes_cluster" "arc_cluster" {
   private_cluster_enabled       = true
 
   api_server_access_profile {
-    vnet_integration_enabled    = true
-    subnet_id                   = var.api_server_subnet_id
+    virtual_network_integration_enabled = true
+    subnet_id                           = var.api_server_subnet_id
   }
 
   default_node_pool {
@@ -24,7 +24,7 @@ resource "azurerm_kubernetes_cluster" "arc_cluster" {
   network_profile {
     network_plugin              = "azure"
     network_plugin_mode         = "overlay"
-    ebpf_data_plane             = "cilium"
+    data_plane                  = "cilium"
     network_policy              = "cilium"
     service_cidr                = var.service_cidr
     dns_service_ip              = var.dns_service_ip
