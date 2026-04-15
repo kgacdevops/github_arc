@@ -1,0 +1,35 @@
+name: Build GCP Infra
+run-name: build GCP infra - ${{ github.event.inputs.ACTION }}
+on:
+  workflow_dispatch:
+    inputs:
+      ACTION:
+        description: "Action"
+        type: choice
+        options:
+        - plan
+        - apply
+        - destroy
+        - skip
+      REGION:
+        description: "Region"
+        type: string
+        default: 'us-central-1a'
+      RUN_INSTALL_ARC:
+        description: "Install ARC"
+        type: boolean
+        default: true
+
+jobs:
+  build_gcp_infra:
+    permissions:
+      id-token: write
+      contents: write
+      repository-projects: write
+      actions: write
+    uses: kgacandole/cicd_arc/.github/workflows/build_arc_infra.yml@main
+    secrets: inherit
+    with:
+      ACTION: ${{ github.event.inputs.ACTION }}
+      CLOUD_PROVIDER: 'gcp'
+      RUN_INSTALL_ARC: ${{ github.event.inputs.RUN_INSTALL_ARC }}
