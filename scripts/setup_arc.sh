@@ -11,10 +11,13 @@ git_repo_name="github_arc"
 cloud_provider="$1"
 runner_label="kg-runner-${cloud_provider}"
 
-# Add Helm Repos
-if [[ "$cloud_provider" != "azure" ]]; then
-    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+if [ -z "$GH_TOKEN" ]; then
+  echo "Error: Github Token not found."
+  exit 1
 fi
+
+# Add Helm Repos
+helm --version || curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
@@ -40,4 +43,4 @@ kubectl create secret generic "$secret_name" -n "$arc_namespace" --from-literal=
 helm install arc -n "${arc_namespace}-systems" --create-namespace oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller
 
 # Install Runners
-helm install "$runner_label" -n "$arc_namespace" --create-namespace --set githubConfigUrl="https://github.com/$git_owner_name/$git_repo_name" --set githubConfigSecret="$secret_name" oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
+helm install "$runner_label" -n "$arc_namespace" --create-namespace --set githubConfigUrl="https://github.com" --set githubConfigSecret="$secret_name" oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
