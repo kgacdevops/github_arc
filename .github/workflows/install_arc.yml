@@ -1,5 +1,5 @@
 name: Install ARC
-run-name: install arc - ${{ github.event.inputs.ACTION }}
+run-name: install arc - ${{ github.event.inputs.CLOUD_PROVIDER }} - ${{ github.event.inputs.REGION }}
 on:
   workflow_dispatch:
     inputs:
