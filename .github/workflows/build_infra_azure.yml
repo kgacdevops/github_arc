@@ -1,0 +1,30 @@
+name: Build Azure Infra
+run-name: build azure infra - ${{ github.event.inputs.ACTION }}
+on:
+  workflow_dispatch:
+    inputs:
+      ACTION:
+        description: "Action"
+        type: choice
+        options:
+        - plan
+        - apply
+        - destroy
+        - skip
+      RUN_INSTALL_ARC:
+        description: "Install ARC"
+        type: boolean
+        default: true
+
+ jobs:
+  build_azure_infra:
+    permissions:
+      contents: write
+      repository-projects: write
+      actions: write
+    uses: kgacandole/cicd_arc/.github/workflows/build_arc_infra.yml@main
+    secrets: inherit
+    uses:
+      ACTION: ${{ github.event.inputs.ACTION }}
+      CLOUD_PROVIDER: 'azure'
+      RUN_INSTALL_ARC: ${{ github.event.inputs.RUN_INSTALL_ARC }}
