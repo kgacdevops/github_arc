@@ -33,3 +33,4 @@ jobs:
       ACTION: ${{ github.event.inputs.ACTION }}
       CLOUD_PROVIDER: 'gcp'
       RUN_INSTALL_ARC: ${{ github.event.inputs.RUN_INSTALL_ARC }}
+      REGION: ${{ github.event.inputs.REGION }}
