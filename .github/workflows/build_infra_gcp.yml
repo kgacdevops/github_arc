@@ -14,7 +14,7 @@ on:
       REGION:
         description: "Region"
         type: string
-        default: 'us-central-1a'
+        default: 'us-central1-a'
       RUN_INSTALL_ARC:
         description: "Install ARC"
         type: boolean
