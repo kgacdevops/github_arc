@@ -43,9 +43,8 @@ runs:
       export GH_TOKEN="${{ env.GH_TOKEN }}"
       if [ "${{ inputs.cloudProvider }}" == "azure" ]; then
         az account set --subscription ${{ inputs.subscriptionId }}
-        az aks get-credentials --resource-group "${{ inputs.resourceGroupName }}" --name "${{ inputs.clusterName }}" --overwrite-existing
-        chmod ugo+rwx scripts/setup_arc.sh
-        ./scripts/setup_arc.sh ${{ inputs.cloudProvider}}
+        az aks command invoke --resource-group "${{ inputs.resourceGroupName }}" --name "${{ inputs.clusterName }}" --file "scripts/setup_arc.sh" --command "chmod ugo+rwx setup_arc.sh && ./setup_arc.sh ${{ inputs.cloudProvider}}"
+        az aks get-credentials  --overwrite-existing
       else
         chmod ugo+rwx scripts/setup_arc.sh
         ./scripts/setup_arc.sh
