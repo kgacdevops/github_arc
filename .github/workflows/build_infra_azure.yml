@@ -15,10 +15,6 @@ on:
         description: "Region"
         type: string
         default: 'westus2'
-      RUN_INSTALL_ARC:
-        description: "Install ARC"
-        type: boolean
-        default: true
 
 jobs:
   build_azure_infra:
@@ -33,4 +29,3 @@ jobs:
       ACTION: ${{ github.event.inputs.ACTION }}
       CLOUD_PROVIDER: 'azure'
       REGION: ${{ github.event.inputs.REGION }}
-      RUN_INSTALL_ARC: ${{ github.event.inputs.RUN_INSTALL_ARC }}

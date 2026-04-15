@@ -15,10 +15,6 @@ on:
         description: "Region"
         type: string
         default: 'us-central1-a'
-      RUN_INSTALL_ARC:
-        description: "Install ARC"
-        type: boolean
-        default: true
 
 jobs:
   build_gcp_infra:
@@ -32,5 +28,4 @@ jobs:
     with:
       ACTION: ${{ github.event.inputs.ACTION }}
       CLOUD_PROVIDER: 'gcp'
-      RUN_INSTALL_ARC: ${{ github.event.inputs.RUN_INSTALL_ARC }}
       REGION: ${{ github.event.inputs.REGION }}

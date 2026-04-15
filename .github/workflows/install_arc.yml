@@ -21,10 +21,8 @@ jobs:
       contents: write
       repository-projects: write
       actions: write
-    uses: kgacandole/cicd_arc/.github/workflows/build_arc_infra.yml@main
+    uses: kgacandole/cicd_arc/.github/workflows/install_arc.yml@main
     secrets: inherit
     with:
-      ACTION: 'skip'
       CLOUD_PROVIDER: ${{ github.event.inputs.CLOUD_PROVIDER }}
-      RUN_INSTALL_ARC: 'true'
       REGION: ${{ github.event.inputs.REGION }}
