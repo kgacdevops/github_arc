@@ -17,7 +17,7 @@ if [ -z "$GH_TOKEN" ]; then
 fi
 
 # Add Helm Repos
-helm --version || curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+helm version || curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
