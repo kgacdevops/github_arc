@@ -19,6 +19,7 @@ on:
 jobs:
   build_azure_infra:
     permissions:
+      id-token: write
       contents: write
       repository-projects: write
       actions: write
