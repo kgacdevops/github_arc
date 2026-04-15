@@ -16,7 +16,7 @@ on:
         type: boolean
         default: true
 
- jobs:
+jobs:
   build_azure_infra:
     permissions:
       contents: write
