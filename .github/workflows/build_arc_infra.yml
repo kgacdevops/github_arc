@@ -45,7 +45,7 @@ jobs:
       with:
         ref: ${{ github.ref_name }}
 
-    # Cloud-specific Auth Steps
+    # Pre-deploy steps
     - name: Setup up Google Cloud Auth
       if: github.event.inputs.CLOUD_PROVIDER == 'gcp'
       uses: google-github-actions/auth@v2
@@ -61,56 +61,22 @@ jobs:
         tenant-id: ${{ vars.AZURE_TENANT_ID }}
         subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
     
-    # Azure steps only - allow runner to access Blob
-    - name: Get Runner IP
-      if: github.event.inputs.CLOUD_PROVIDER == 'azure' && github.event.inputs.ACTION != 'skip'
-      run: |
-        IP=$(curl -sL https://api.ipify.org)
-        echo "RUNNER_IP=$IP" >> $GITHUB_ENV
-    
-    - name: Whitelist Runner IP
-      if: github.event.inputs.CLOUD_PROVIDER == 'azure' && github.event.inputs.ACTION != 'skip'
-      uses: azure/CLI@v1
-      env:
-        STORAGE_ACCOUNT_NAME: arcrunnertfstate
-        RESOURCE_GROUP: tfstate-rg
-      with:
-        inlineScript: |
-          echo "Whitelisting Runner IP"
-          az storage account update --name ${{ env.STORAGE_ACCOUNT_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --public-network-access Enabled
-          az storage account network-rule add --account-name ${{ env.STORAGE_ACCOUNT_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --ip-address ${{ env.RUNNER_IP }}
-
-          echo "Sleeping to propagate whitelisting"
-          sleep 30
-    
-    # Terraform Steps
-    - name: Setup Terraform
-      if: github.event.inputs.ACTION != 'skip'
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: ${{ vars.TERRAFORM_VERSION }}
-    
-    - name: Export GH Token
-      if: github.event.inputs.ACTION != 'skip'
-      run: echo "TF_VAR_gh_token=${{ env.GH_TOKEN }}" >> $GITHUB_ENV
-        
+    # Run Terraform
     - name: Run Terraform
       if: github.event.inputs.ACTION != 'skip'
+      uses: kgacandole/github_arc/actions/run_terraform@main
       env:
+        TERRAFORM_VERSION: ${{ vars.TERRAFORM_VERSION }}
         ARM_USE_OIDC: true
         ARM_USE_CLI: false
         ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
         ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      run: |
-        cd terraform/${{ github.event.inputs.CLOUD_PROVIDER }}
-        terraform init
-        terraform plan
-        if [[ "${{ inputs.ACTION }}" == "apply" ]]; then
-          terraform apply -auto-approve
-        elif [[ "${{ inputs.ACTION }}" == "destroy" ]]; then
-          terraform destroy -auto-approve
-        fi  
+        STORAGE_ACCOUNT_NAME: ${{ vars.STORAGE_ACCOUNT_NAME_TFSTATE }}
+        RESOURCE_GROUP: ${{ vars.RESOURCE_GROUP_TFSTATE }}                
+      with:
+        cloudProvider: ${{ github.event.inputs.CLOUD_PROVIDER }}
+        tfAction: ${{ github.event.inputs.ACTION }}
     
     # Post Terraform Steps - Install/Setup ARC
     - name: Install ARC
