@@ -4,6 +4,12 @@ run-name: Fix Auth
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: write
+  repository-projects: write
+  actions: write
+
 jobs:
   fix_auth:
     name: Fix Auth
