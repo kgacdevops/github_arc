@@ -22,7 +22,7 @@ jobs:
       contents: write
       repository-projects: write
       actions: write
-    uses: kgacandole/cicd_arc/.github/workflows/build_arc_infra.yml@main
+    uses: kgacdevops/cicd_arc/.github/workflows/build_arc_infra.yml@main
     secrets: inherit
     with:
       ACTION: ${{ github.event.inputs.ACTION }}
