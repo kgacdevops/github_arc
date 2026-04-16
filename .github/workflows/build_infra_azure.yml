@@ -10,7 +10,6 @@ on:
         - plan
         - apply
         - destroy
-        - skip
       REGION:
         description: "Region"
         type: string
