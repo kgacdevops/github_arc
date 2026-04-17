@@ -11,6 +11,9 @@ on:
         - azure
         - gcp
         - aws
+      REGION:
+        description: "Region"
+        type: string
 
 jobs:
   build_azure_infra:
@@ -23,3 +26,4 @@ jobs:
     secrets: inherit
     with:
       CLOUD_PROVIDER: ${{ github.envent.inputs.CLOUD_PROVIDER }}
+      REGION: ${{ github.envent.inputs.REGION }}
