@@ -1,0 +1,25 @@
+name: Install Prereqs
+run-name: install prereqs - ${{ github.envent.inputs.CLOUD_PROVIDER }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      CLOUD_PROVIDER:
+        description: "Action"
+        type: choice
+        options:
+        - azure
+        - gcp
+        - aws
+
+jobs:
+  build_azure_infra:
+    permissions:
+      id-token: write
+      contents: write
+      repository-projects: write
+      actions: write
+    uses: kgacdevops/cicd_arc/.github/workflows/pre_req.yml@main
+    secrets: inherit
+    with:
+      CLOUD_PROVIDER: ${{ github.envent.inputs.CLOUD_PROVIDER }}
