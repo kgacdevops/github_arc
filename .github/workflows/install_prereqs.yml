@@ -16,7 +16,7 @@ on:
         type: string
 
 jobs:
-  build_azure_infra:
+  install_prereqs:
     permissions:
       id-token: write
       contents: write
