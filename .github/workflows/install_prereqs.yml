@@ -22,7 +22,7 @@ jobs:
       contents: write
       repository-projects: write
       actions: write
-    uses: kgacdevops/cicd_arc/.github/workflows/pre_req.yml@main
+    uses: kgacdevops/cicd_arc/.github/workflows/install_pre_req.yml@main
     secrets: inherit
     with:
       CLOUD_PROVIDER: ${{ github.event.inputs.CLOUD_PROVIDER }}
