@@ -1,0 +1,9 @@
+1. Create Github OIDC Identity Provider
+    - Provider type: OpenID Connect
+    - Provider url: https://token.actions.githubusercontent.com
+    - Audience: sts.amazonaws.com
+2. Get Thumbprint - 2b18947a6a9fc7764fd8b5fb18a863b0c6dac24f
+3. Create IAM role
+    - Type: Web Identity
+    - Choose identity provider (created in the first step)
+    - Attach Administrator Access or Specific Service access
