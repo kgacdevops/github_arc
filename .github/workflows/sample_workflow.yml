@@ -18,7 +18,7 @@ jobs:
         echo "${{ secrets.GH_INSTALLATION_ID }}" >> gh_keys.txt
 
     - name: Upload Secrets
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: gh-keys
         path: gh_keys.txt
